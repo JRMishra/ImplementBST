@@ -8,6 +8,7 @@ namespace BinarySearchTree
     {
         public BinaryNode<T> rootNode;
         public BinaryNode<T> parentNode;
+        public int NumberOfElements { get; private set; } = 0;
 
         public BstBuilder()
         {
@@ -20,15 +21,19 @@ namespace BinarySearchTree
             if (rootNode == null)
             {
                 rootNode = new BinaryNode<T>(data);
+                NumberOfElements++;
             }
             else
             {
-                var node = new BinaryNode<T>(data);
-                var temp = parentNode;
+                BinaryNode<T> node = new BinaryNode<T>(data);
+                BinaryNode<T> temp = parentNode;
                 if (data.CompareTo(rootNode.data) < 0)
                 {
                     if (temp.lChild == null)
+                    {
                         temp.lChild = node;
+                        NumberOfElements++;
+                    }
                     else
                     {
                         parentNode = temp.lChild;
@@ -38,7 +43,10 @@ namespace BinarySearchTree
                 else
                 {
                     if (temp.rChild == null)
+                    {
                         temp.rChild = node;
+                        NumberOfElements++;
+                    }  
                     else
                     {
                         parentNode = temp.rChild;
@@ -65,6 +73,29 @@ namespace BinarySearchTree
             if (parent.rChild != null)
                 Display(parent.rChild);
 
+        }
+
+        public int CheckDeepth()
+        {
+            BinaryNode<T> temp = rootNode;
+            int maxSize = 0;
+            Stack<BinaryNode<T>> stack = new Stack<BinaryNode<T>>();
+
+            while (temp != null || stack.Count != 0)
+            {
+                int size = 0;
+                while (temp != null)
+                {
+                    stack.Push(temp);
+                    temp = temp.lChild;
+                    size++;
+                }
+                temp = stack.Pop();
+
+                temp = temp.rChild;
+                maxSize = maxSize < size ? size : maxSize;
+            }
+            return maxSize - 1;
         }
     }
 }
